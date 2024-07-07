@@ -10,30 +10,28 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            // Получить данные о пользователе
-            const user = Telegram.WebApp.initDataUnsafe.user;
+        // Функция для отображения информации о пользователе
+        function displayUserInfo(user) {
             if (user) {
-                document.getElementById('user-info').innerText = `Привет, ${user.username}!`;
+                document.getElementById('user-info').innerText = 
+                    `Имя: ${user.first_name}; user_id: ${user.id}; username: @${user.username}`;
             } else {
                 document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
             }
-        });
-
-        // Автоматически получать данные при загрузке страницы
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        if (user) {
-            document.getElementById('user-info').innerText = `Привет, ${user.username}!`;
-        } else {
-            document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
         }
 
-        // Показываем кнопку
-        Telegram.WebApp.MainButton.setText('Получить данные');
+        // Получаем данные о пользователе при загрузке страницы
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        displayUserInfo(user);
+
+        // Показываем кнопку для получения данных
+        Telegram.WebApp.MainButton.setText('Обновить данные');
         Telegram.WebApp.MainButton.show();
+
+        // Обработчик события нажатия на главную кнопку
+        Telegram.WebApp.onEvent('mainButtonClicked', function() {
+            displayUserInfo(Telegram.WebApp.initDataUnsafe.user);
+        });
     </script>
 </body>
 </html>
-
-
-
