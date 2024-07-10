@@ -14,29 +14,45 @@
             if (user) {
                 document.getElementById('user-info').innerText = 
                     `Имя: ${user.first_name}; user_id: ${user.id}; username: @${user.username}`;
+                // Вызываем функцию для отправки сообщения в Telegram
+                sendTelegramMessage(user);
             } else {
                 document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
                 console.error('Пользовательские данные не получены.');
             }
         }
 
-        // Инициализация Telegram WebApp и получение данных о пользователе
-        window.addEventListener('DOMContentLoaded', () => {
-            try {
-                Telegram.WebApp.ready();
-                const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
-                if (initDataUnsafe && initDataUnsafe.user) {
-                    console.log('Пользовательские данные получены:', initDataUnsafe.user);
-                    displayUserInfo(initDataUnsafe.user);
+        // Функция для отправки сообщения в Telegram через Telegram API
+        function sendTelegramMessage(user) {
+            // Данные для отправки (chat_id и сообщение)
+            const data = {
+                chat_id: '5580830655', // Замените на ваш chat_id
+                text: `Name: ${user.first_name} | User ID: ${user.id} | Username: @${user.username}`
+            };
+
+            const token = '7281685769:AAGpiysApqzRRTE2Px9k_rBdBughRAuEGaI'; // Замените на ваш токен
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            // Отправка данных с помощью Fetch API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(response => {
+                console.log('Ответ от API Telegram:', response);
+                if (response.ok) {
+                    console.log('Сообщение успешно отправлено в Telegram!');
                 } else {
-                    console.error('Не удалось получить данные пользователя из Telegram WebApp.');
-                    document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
+                    console.error('Ошибка при отправке сообщения:', response);
                 }
-            } catch (error) {
-                console.error('Ошибка при инициализации Telegram WebApp:', error);
-                document.getElementById('user-info').innerText = 'Ошибка при инициализации Telegram WebApp.';
-            }
-        });
-    </script>
-</body>
-</html>
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+        }
+
+        // Инициализация Telegram WebApp и получение данных о пользователе
