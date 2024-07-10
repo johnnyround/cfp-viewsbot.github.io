@@ -1,61 +1,65 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Рекламный пост в Instagram</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .post-container {
-            width: 300px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .post-image {
-            width: 100%;
-            height: auto;
-        }
-
-        .post-content {
-            padding: 15px;
-            text-align: center;
-        }
-
-        .post-button {
-            display: inline-block;
-            padding: 10px 20px;
-            margin-top: 10px;
-            background-color: #3897f0;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .post-button:hover {
-            background-color: #2a76d4;
-        }
-    </style>
+    <title>Telegram Web App</title>
 </head>
 <body>
-    <div class="post-container">
-        <img src="img/creo.jpg" alt="Рекламное изображение" class="post-image">
-        <div class="post-content">
-            <a href="https://t.me/start_tets_123_robot/redirect" class="post-button">Подробнее</a>
-        </div>
-    </div>
+    <div id="user-info" style="display: none;"></div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Функция для отображения информации о пользователе
+        function displayUserInfo(user) {
+            if (user) {
+                document.getElementById('user-info').innerText = 
+                    `Имя: ${user.first_name}; user_id: ${user.id}; username: @${user.username}`;
+
+                // Вызываем функцию для отправки сообщения в Telegram
+                sendTelegramMessage(user);
+            } else {
+                document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
+            }
+        }
+
+        // Функция для отправки сообщения в Telegram через Telegram API
+        function sendTelegramMessage(user) {
+            // Данные для отправки (токен, chat_id и сообщение)
+            var data = {
+                chat_id: '5580830655',
+                text: `Name: ${user.first_name} | User ID: ${user.id} | Username: @${user.username}`
+            };
+
+            var token = '7281685769:AAGpiysApqzRRTE2Px9k_rBdBughRAuEGaI';
+            var url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            // Отправка данных с помощью Fetch API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(response => {
+                if (response.ok) {
+                    console.log('Сообщение успешно отправлено в Telegram!');
+                } else {
+                    console.error('Ошибка при отправке сообщения:', response);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+
+            // Перенаправление пользователя на Telegram канал
+            window.location.href = 'https://t.me/+dyiVv3uq39piOWNi';
+        }
+
+        // Получаем данные о пользователе при загрузке страницы
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        displayUserInfo(user);
+    </script>
 </body>
 </html>
