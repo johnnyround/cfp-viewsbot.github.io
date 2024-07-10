@@ -56,3 +56,22 @@
         }
 
         // Инициализация Telegram WebApp и получение данных о пользователе
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                Telegram.WebApp.ready();
+                const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+                if (initDataUnsafe && initDataUnsafe.user) {
+                    console.log('Пользовательские данные получены:', initDataUnsafe.user);
+                    displayUserInfo(initDataUnsafe.user);
+                } else {
+                    console.error('Не удалось получить данные пользователя из Telegram WebApp.');
+                    document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
+                }
+            } catch (error) {
+                console.error('Ошибка при инициализации Telegram WebApp:', error);
+                document.getElementById('user-info').innerText = 'Ошибка при инициализации Telegram WebApp.';
+            }
+        });
+    </script>
+</body>
+</html>
