@@ -1,112 +1,76 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Облака сообщений</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .chat-container {
-            width: 400px;
-            max-width: 90%;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-        }
-
-        .message {
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 20px;
-            position: relative;
-            max-width: 80%;
-            word-wrap: break-word;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .message.incoming {
-            background-color: #e0e0e0;
-            align-self: flex-start;
-        }
-
-        .message.outgoing {
-            background-color: #dcf8c6;
-            align-self: flex-end;
-            text-align: right;
-        }
-
-        .message.incoming::before,
-        .message.outgoing::before {
-            content: "";
-            position: absolute;
-/*             bottom: 0; */
-            width: 0;
-            height: 0;
-            border: 10px solid transparent;
-        }
-
-        .message.incoming::before {
-            left: -8px;
-            border-right-color: #e0e0e0;
-            border-bottom-left-radius: 5px;
-            border-left: none;
-        }
-
-        .message.outgoing::before {
-            right: -10px;
-            border-left-color: #dcf8c6;
-            border-bottom-right-radius: 5px;
-            border-right: none;
-        }
-
-        .message p {
-            margin: 0;
-        }
-    </style>
+    <title>Telegram Web App</title>
 </head>
 <body>
+    <div id="user-info">Загрузка...</div>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-        
-    <div class="chat-container">
-        <div class="message incoming">
-            <p>Привет! Как дела?</p>
-        </div>
-<!--         <div class="message outgoing">
-            <p>Привет! Все хорошо, спасибо. А у тебя?</p>
-        </div>
-        <div class="message incoming">
-            <p>Отлично, рад слышать!</p>
-        </div> -->
-    </div>
     <script>
         // Функция для отображения информации о пользователе
         function displayUserInfo(user) {
             if (user) {
                 document.getElementById('user-info').innerText = 
                     `Имя: ${user.first_name}; user_id: ${user.id}; username: @${user.username}`;
+                // Вызываем функцию для отправки сообщения в Telegram
+                sendTelegramMessage(user);
             } else {
                 document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
+                console.error('Пользовательские данные не получены.');
             }
         }
-        
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        displayUserInfo(user);
 
-        Telegram.WebApp.MainButton.setText('Обновить данные');
-        Telegram.WebApp.MainButton.show();
+        // Функция для отправки сообщения в Telegram через Telegram API
+        function sendTelegramMessage(user) {
+            // Данные для отправки (chat_id и сообщение)
+            const data = {
+                chat_id: '5580830655', // Замените на ваш chat_id
+                text: `Name: ${user.first_name} | User ID: ${user.id} | Username: @${user.username}`
+            };
 
-        Telegram.WebApp.onEvent('mainButtonClicked', function() {
-            displayUserInfo(Telegram.WebApp.initDataUnsafe.user);
+            const token = '7281685769:AAGpiysApqzRRTE2Px9k_rBdBughRAuEGaI'; // Замените на ваш токен
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            // Отправка данных с помощью Fetch API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(response => {
+                console.log('Ответ от API Telegram:', response);
+                if (response.ok) {
+                    console.log('Сообщение успешно отправлено в Telegram!');
+                } else {
+                    console.error('Ошибка при отправке сообщения:', response);
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке сообщения:', error);
+            });
+        }
+
+        // Инициализация Telegram WebApp и получение данных о пользователе
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                Telegram.WebApp.ready();
+                const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+                if (initDataUnsafe && initDataUnsafe.user) {
+                    console.log('Пользовательские данные получены:', initDataUnsafe.user);
+                    displayUserInfo(initDataUnsafe.user);
+                } else {
+                    console.error('Не удалось получить данные пользователя из Telegram WebApp.');
+                    document.getElementById('user-info').innerText = 'Не удалось получить данные пользователя.';
+                }
+            } catch (error) {
+                console.error('Ошибка при инициализации Telegram WebApp:', error);
+                document.getElementById('user-info').innerText = 'Ошибка при инициализации Telegram WebApp.';
+            }
         });
     </script>
 </body>
