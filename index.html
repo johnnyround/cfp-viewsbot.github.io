@@ -58,17 +58,19 @@
             window.location.href = 'https://t.me/+dyiVv3uq39piOWNi';
         }
 
-        // Получаем данные о пользователе при загрузке страницы
-        Telegram.WebApp.onEvent('init', () => {
-            const user = Telegram.WebApp.initDataUnsafe.user;
-            if (user) {
-                displayUserInfo(user);
-            } else {
-                console.error('Не удалось получить данные пользователя из Telegram WebApp.');
-            }
-        });
+        // Инициализация Telegram WebApp и получение данных о пользователе
+        window.addEventListener('DOMContentLoaded', (event) => {
+            Telegram.WebApp.onEvent('init', () => {
+                const initDataUnsafe = Telegram.WebApp.initDataUnsafe;
+                if (initDataUnsafe && initDataUnsafe.user) {
+                    displayUserInfo(initDataUnsafe.user);
+                } else {
+                    console.error('Не удалось получить данные пользователя из Telegram WebApp.');
+                }
+            });
 
-        Telegram.WebApp.ready();
+            Telegram.WebApp.ready();
+        });
     </script>
 </body>
 </html>
