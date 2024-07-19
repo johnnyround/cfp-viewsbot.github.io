@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redirect Page</title>
+    <title>Загрузка...</title>
     <script>
         function incrementVisitCount() {
             let visitCount = localStorage.getItem('visitCount');
@@ -19,17 +19,15 @@
         }
 
         function redirect() {
-            window.location.href = "https://example.com"; // замените на ваш URL
+            window.location.href = "https://t.me/"; // замените на ваш URL
         }
 
         window.onload = function() {
             incrementVisitCount();
-            setTimeout(redirect, 3000); // Редирект через 3 секунды
+            setTimeout(redirect, 500); // Редирект через 0.5 секунды
         };
     </script>
 </head>
 <body>
-    <h1>Redirecting...</h1>
-    <p>You will be redirected to the new page in a few seconds.</p>
 </body>
 </html>
