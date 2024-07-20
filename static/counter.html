@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Counter</title>
+    <script>
+        async function getVisitCount() {
+            try {
+                const response = await fetch('http://localhost:3000/count');
+                const data = await response.json();
+                document.getElementById('visitCount').innerText = `This page has been visited ${data.count} times.`;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        window.onload = function() {
+            getVisitCount();
+        };
+    </script>
+</head>
+<body>
+    <h1>Visit Counter</h1>
+    <p id="visitCount">Loading...</p>
+</body>
+</html>
