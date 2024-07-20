@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка...</title>
+    <script>
+        function incrementVisitCount() {
+            let visitCount = localStorage.getItem('visitCount');
+
+            if (visitCount === null) {
+                visitCount = 0;
+            } else {
+                visitCount = parseInt(visitCount);
+            }
+
+            visitCount++;
+            localStorage.setItem('visitCount', visitCount);
+        }
+
+        function redirect() {
+            window.location.href = "https://t.me/+3mwKsLbPDMdlYjI6"; // замените на ваш URL
+        }
+
+        window.onload = function() {
+            incrementVisitCount();
+            setTimeout(redirect, 300); // Редирект через 0.3 секунды
+        };
+    </script>
+</head>
+<body>
+</body>
+</html>
